@@ -1,0 +1,44 @@
+package com.example.eatikapi.service;
+
+import com.example.eatikapi.dto.AuthResponse;
+import com.example.eatikapi.dto.LoginRequest;
+import com.example.eatikapi.dto.RegisterRequest;
+import com.example.eatikapi.entity.User;
+import com.example.eatikapi.repository.UserRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class AuthService {
+
+    private final UserRepository userRepository;
+
+    public AuthService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public AuthResponse register(RegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username sudah terdaftar!");
+        }
+
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setNama(request.getNama());
+
+        userRepository.save(user);
+
+        return new AuthResponse("Registrasi berhasil", user.getUsername(), user.getNama());
+    }
+
+    public AuthResponse login(LoginRequest request) {
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new RuntimeException("Username atau password salah!"));
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new RuntimeException("Username atau password salah!");
+        }
+
+        return new AuthResponse("Login berhasil", user.getUsername(), user.getNama());
+    }
+}
