@@ -1,5 +1,7 @@
 package com.example.eatikapi.service;
 
+import com.example.eatikapi.KategoriMenu;
+import com.example.eatikapi.StatusMenu;
 import com.example.eatikapi.dto.MenuRequest;
 import com.example.eatikapi.dto.MenuResponse;
 import com.example.eatikapi.entity.Menu;
@@ -18,8 +20,14 @@ public class MenuService {
         this.menuRepository = menuRepository;
     }
 
-    public List<MenuResponse> getAllMenu() {
-        return menuRepository.findAll()
+    public List<MenuResponse> getAllMenu(
+            String nama,
+            KategoriMenu kategori,
+            StatusMenu status,
+            Double minHarga,
+            Double maxHarga
+    ) {
+        return menuRepository.searchAndFilterMenu(nama, kategori, status, minHarga, maxHarga)
                 .stream()
                 .map(this::mapToResponse)
                 .toList();

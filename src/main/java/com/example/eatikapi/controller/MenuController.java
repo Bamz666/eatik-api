@@ -25,8 +25,14 @@ public class MenuController {
     }
 
     @GetMapping
-    public List<MenuResponse> getAllMenu() {
-        return menuService.getAllMenu();
+    public List<MenuResponse> getAllMenu(
+            @RequestParam(required = false) String nama,
+            @RequestParam(required = false) KategoriMenu kategori,
+            @RequestParam(required = false) StatusMenu status,
+            @RequestParam(required = false) Double minHarga,
+            @RequestParam(required = false) Double maxHarga
+    ) {
+        return menuService.getAllMenu(nama, kategori, status, minHarga, maxHarga);
     }
 
     @PostMapping(consumes = "multipart/form-data")
